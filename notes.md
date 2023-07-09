@@ -13,3 +13,6 @@ Two ways to run a cargo project is by building the project and then calling the 
 Cargo also has `cargo check` for quickly checking your code to make sure that it can compile without actually producing the executable.
 When your project is finally ready for release, use `cargo build --release` to compile it. This will create the executable in `target/release` instead of `target/debug`. 
 
+# Chapter 3
+## Variables and Mutability
+Variables by default are immutable. Can use the `mut` keyword.  
