@@ -113,4 +113,125 @@ fn main() {
     println!("Liftoff!!!");
 }
 ```
+# Chapter 4 - Understanding Ownership
+Ownership is a set of rules that govern how a Rust program manages memory. For Rust, memory is managed through a system of ownership and a set of rules that the compiler checks. 
+
+## The Stack and the Heap
+Parts of ownership will be described in relation to stack vs. heap. The stack stores values in the order that it gets them, and removes the items that are "stacked on the top" like a stack of plates (LIFO). The heap is less organized because when you put data on the heap, you request a certain amount of space. The internal memory allocator will find an empty spot on the heap that is big enough for the space that you requested, and it returns a pointer (address of location). This is called "allocating on the heap" or sometimes called "allocating." If we want the data stored at the memory address, all we need is a pointer to where the data is stored (the pointer). Using the stack is faster, accessing data in the heap is slower. However, optimizations can be made to minimize the amount of duplicate data on the heap, cleaning up unused data on the heap so you don't run out of space. These are problems that ownership can solve. 
+
+### Ownership Rules
+* Each value in Rust has an owner
+* There can only be one owner at a time
+* When the owner goes out of scope, the value will be dropped
+
+#### The String type
+String literals are convenient, but they aren't suitable for every situation in which we may want to use text. One reason is that they're immutable. Another is that not every string value can be known when we write our code. Rust has a second string type called `String` which can take user input and store it, for example. This type manages data allocated on the heap and as such is able to store an amount of text that is unknown to us at compile time. You can also create a `String` from a string literal by using the `from` function:
+```rust
+let mut s = String::from("Hello");
+s.push_str(", world!"); // push_str() appends a literal to a String
+println!("{}", s);  // this will print "hello, world!"
+```
+So this begs the question, why can `String` be mutated but String literals cannot? 
+
+#### Memory and Allocation
+We know the contents of a string literal, which is why they are fast and efficient. With the `String` type, in order to support mutable, growable text, we need to allocate an amount of memory on the heap, unknown at compile time, to hold the contents. 
+1. Memory must be requested from the memory allocator at runtime
+2. We need a way of returning this memory to the allocator when we're done with our `String`
+In other words, we need exactly one `allocate` with exactly one `free` to properly manage the memory on the heap. In Rust, memory is automatically returned once the variable that owns it goes out of scope. When a variable goes out of scope, Rust calls a special function called `drop` automatically at the closing curly brace (end of scope). This is similar in C++, where the pattern of deallocating resources at the end of an item's lifetime is sometimes called RAII.
+
+```rust
+let s1 = String::from("hello");
+let s2 = s1;
+```
+Instead of copying and creating a new string for `s2`, both `s1` and `s2` here share the same pointer to "hello" on the heap. In other words, we do not copy the data on the heap that the pointer refers to. What Rust actually does is that it invalidates `s1`. Instead of being called a shallow copy, it is called a `move`. This prevents the double deallocation of memory, known as a "double free" error. 
+
+#### Variables and Data interacting with clone
+If we do want to deeply copy heap data of a `String`, we can use a method called `clone`.
+
+#### Stack-only data: Copy
+Integers have a known size at compile time, so are stored entirely on the stack. As a general rule, any group of simple scalar values can implement `copy`, and nothing that requires allocation or is some form of resource can implement `copy`. 
+
+#### Ownership and Functions
+Passing in a variable to a function will move or copy.
+
+#### Return values and scope
+Returning values can also transfer ownership. The ownership of a variable follows this pattern: assigning a value to another variable moves it. When a variable that includes data on the heap goes out of scope, the value will be cleaned up by `drop` unless ownership of the data has been moved to another variable. What do we do when we want to let a function use a value but not take ownership? We can use a Rust feature for using a value without transferring ownership, called `references`. 
+
+## References and Borrowing
+A `reference` is like a pointer in that it's an address we can follow to access the data stored at that address; that data is owned by some other variable. Unlike a pointer, a reference is guaranteed to point to a valid value of a particular type for the life of that reference. `&` represent `references`, and they allow you to refer to some value without taking ownership of it. The opposite of referencing by using `&` is `dereferencing`, which is accomplished with the dereference operator, `*`. 
+
+```rust
+fn main() {
+    let s1 = String::from("hello");
+    let len = calculate_length(&s1);    // &s1 refers to the value of s1 but does not own it
+
+    println!("The length of '{}' is {}.", s1, len);
+}
+fn calculate_length(s: &String) -> usize {  // s is a reference to a String
+    s.len();
+}   // s goes out of scope, but because it doesn't have ownership of what it refers to, it is not dropped
+```
+
+We call the action of creating a reference `borrowing`. We can think of it like if a person owns something, you can borrow it from them. When you're done, you have to give it back because you don't own it. 
+
+### Mutable References
+Mutable references have one big restriction: if you have a mutable reference to a value, you can have no other references to that value. This feature/restriction prevents data races at compile time. We cannot have a mutable reference while we have an immutable one to the same value. 
+
+```rust
+fn main() {
+    let mut  s = String::from("hello");
+    change(&mut s);
+}
+fn change(some_string: mut &String) -> { 
+    some_string.push_str(", world");
+}   
+```
+
+### Dangling References
+A `dangling pointer` is a pointer that references a location in memory that may have been given to someone else--by freeing some memory while preserving a pointer to that memory. Rust will prevent this by throwing a compile-time error. 
+
+## Rules of References
+* At any given time, you can have either one mutable reference or any number of immutable references
+* References must always be valid
+
+## The Slice Type
+Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice does not have ownership. 
+
+### String Slices
+A reference to part of a `String`. Rather than referencing the entire `String`, we only reference a portion of the `String`. 
+```rust
+let s = String::from("hello world");
+let hello = &s[0..5];
+let slice = &s[..5];    // also has the value of "hello"
+
+let world = &s[6..11];
+let world_slice = &s[6..];  // this is also the same as "world"
+```
+
+```rust
+fn first_word(s: &String) -> &str {
+    // given a sentence, return the first word. If there is only one word in the sentence then return the word.
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
+```
+
+### String literals as slices
+```rust
+fn first_word(s: &String) -> &str{} // can be further improved
+fn first_word(s: &str) -> &str{} // can be further improved
+```
+
+Defining a function to take a string slice instead of a reference to a `String` makes our API more general and useful.
+
+
+# Chapter 5 - Using Structs to Structure Related Data
+A `struct` is a custom data type that lets you package together and name multiple related values that make up a meaningful group.
 
