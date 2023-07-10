@@ -188,9 +188,50 @@ fn change(some_string: mut &String) -> {
 ```
 
 ### Dangling References
+A `dangling pointer` is a pointer that references a location in memory that may have been given to someone else--by freeing some memory while preserving a pointer to that memory. Rust will prevent this by throwing a compile-time error. 
+
+## Rules of References
+* At any given time, you can have either one mutable reference or any number of immutable references
+* References must always be valid
+
+## The Slice Type
+Slices let you reference a contiguous sequence of elements in a collection rather than the whole collection. A slice does not have ownership. 
+
+### String Slices
+A reference to part of a `String`. Rather than referencing the entire `String`, we only reference a portion of the `String`. 
+```rust
+let s = String::from("hello world");
+let hello = &s[0..5];
+let slice = &s[..5];    // also has the value of "hello"
+
+let world = &s[6..11];
+let world_slice = &s[6..];  // this is also the same as "world"
+```
+
+```rust
+fn first_word(s: &String) -> &str {
+    // given a sentence, return the first word. If there is only one word in the sentence then return the word.
+    let bytes = s.as_bytes();
+
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+
+    &s[..]
+}
+```
+
+### String literals as slices
+```rust
+fn first_word(s: &String) -> &str{} // can be further improved
+fn first_word(s: &str) -> &str{} // can be further improved
+```
+
+Defining a function to take a string slice instead of a reference to a `String` makes our API more general and useful.
 
 
-
-
-
+# Chapter 5 - Using Structs to Structure Related Data
+A `struct` is a custom data type that lets you package together and name multiple related values that make up a meaningful group.
 
