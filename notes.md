@@ -297,6 +297,10 @@ fn main() {
 ## Ownership of Struct Data
 It's possible for structs to store references to data owned by something else, but to do so we have to use `lifetimes`. `Lifetimes` ensure that the data referenced by a struct is valid for as long as the struct is. 
 
+## Method syntax
+Methods are similar to functions except they are defined within the context of a struct (or an enum or a trait object). Their first parameter is always `self`, which represents the instance of the struct the method is being called on. 
+
+
 
 
 
