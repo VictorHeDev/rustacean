@@ -235,3 +235,82 @@ Defining a function to take a string slice instead of a reference to a `String` 
 # Chapter 5 - Using Structs to Structure Related Data
 A `struct` is a custom data type that lets you package together and name multiple related values that make up a meaningful group.
 
+## Defining and Instantiating Structs
+Structs are similar to Tuples, and both can hold multiple related values of different types. Structs are more flexible than Tuples, and you don't need to rely on the order of the data. To construct a Struct:
+
+```rust
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        active: true,
+        username: String::from("someusername123"),
+        email: String::from("someone@example.com"),
+        sign_in_count: 1,
+    };
+    user1.email = String::from("anotheremail@example.com"); // mutate value
+}
+```
+
+## Using the Field Init Shorthand
+```rust
+fn build_user(email: String, username: String) -> User {
+    // Create new instance of the User struct
+    User {
+        active: true,
+        username,
+        email,
+        sign_in_count: 1,
+    }
+}
+```
+It is sometimes useful to create a new instance of a struct that includes most of the values from another instance. You can do this by using the "struct update" syntax.
+
+```rust
+fn main(email: String, username: String) -> User {
+    // -- snip --
+    let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1 // specifies that any remaining fields come from corresponding fields in user1
+    }
+}
+```
+
+## Using Tuple Structs without named fields to create different types
+Tuple structs are structs that look similar to tuples. They have the added meaning the struct name provides, but don't have names associated with their fields. Instead, they just have the types of the fields. Tuple structs are useful when you want to give the whole tuple a name, and make the tuple a different type from other tuples, and when naming each field as in a regular struct would be verbose or redundant. 
+
+```rust
+struct Color(i32, i32, i32);
+struct Point(i32, i32, i32);
+
+fn main() {
+    let black = Color(0, 0, 0);
+    let origin = Point(0, 0, 0);
+}
+```
+
+## Ownership of Struct Data
+It's possible for structs to store references to data owned by something else, but to do so we have to use `lifetimes`. `Lifetimes` ensure that the data referenced by a struct is valid for as long as the struct is. 
+
+## Method syntax
+Methods are similar to functions except they are defined within the context of a struct (or an enum or a trait object). Their first parameter is always `self`, which represents the instance of the struct the method is being called on. Rust does not implement automatic `getters` for struct fields. 
+
+### Where is the `->` operator like in C or C++?
+Rust has automatic referencing and dereferencing and does not use a -> operator. Rust will automatically add in `&`, `&mut`, or `*` when an object's method is called. '
+
+### Associated Functions
+Associated functions that don't have `self' as their first parameter don't need an instance of the type to work with. Associated functions that aren't methods are often used for constructors that will return a new instance of the struct.
+
+### Multiple `impl` blocks
+Each struct is allowed to have mutiple `impl` blocks as a way to organize code. 
+
+
+
+
+
+
