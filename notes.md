@@ -298,9 +298,16 @@ fn main() {
 It's possible for structs to store references to data owned by something else, but to do so we have to use `lifetimes`. `Lifetimes` ensure that the data referenced by a struct is valid for as long as the struct is. 
 
 ## Method syntax
-Methods are similar to functions except they are defined within the context of a struct (or an enum or a trait object). Their first parameter is always `self`, which represents the instance of the struct the method is being called on. 
+Methods are similar to functions except they are defined within the context of a struct (or an enum or a trait object). Their first parameter is always `self`, which represents the instance of the struct the method is being called on. Rust does not implement automatic `getters` for struct fields. 
 
+### Where is the `->` operator like in C or C++?
+Rust has automatic referencing and dereferencing and does not use a -> operator. Rust will automatically add in `&`, `&mut`, or `*` when an object's method is called. '
 
+### Associated Functions
+Associated functions that don't have `self' as their first parameter don't need an instance of the type to work with. Associated functions that aren't methods are often used for constructors that will return a new instance of the struct.
+
+### Multiple `impl` blocks
+Each struct is allowed to have mutiple `impl` blocks as a way to organize code. 
 
 
 
