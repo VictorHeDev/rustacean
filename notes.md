@@ -393,6 +393,18 @@ fn value_in_cents(coin: Coin) -> u8 {
 ## Patterns that bind to values
 
 
+## Catch-all Patterns and the _ Placeholder
+```rust
+let dice_roll = 9;
+match dice_roll {
+    3 => add_fancy_hat(),
+    7 => remove_fancy_hat(),
+    _ => (),  // exhaustive catch-all pattern where nothing happens
+}
+
+fn add_fancy_hat() {};
+fn remove_fancy_hat() {};
+```
 
 
 
