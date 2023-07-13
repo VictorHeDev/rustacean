@@ -361,5 +361,38 @@ fn main() {
 ```
 The `<T>` syntax is a generic type parameter. Whenever we have an `Option<T>`, we have to convert to a `T` before you can perform `T` operations on it. In general, in order to use an `Option<T>` value, you want to have code that will handle each variant. This can be handled by the `match` expression which is a control flow construct that does this with enums. 
 
+## The match control flow construct
+```rust
+#[derive(Debug)] // so we can inspect the US state
+enum UsState {
+    Alabama,
+    Alaska,
+    // --snip--
+}
+
+enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter(UsState),
+}
+
+fn value_in_cents(coin: Coin) -> u8 {
+    match coin {
+        Coin::Penny => 1,
+        Coin::Nickel => 5,
+        Coin::Dime => 10,
+        Coin::Quarter => {
+            println!("State quarter from {:?}!", state);
+            25
+        }
+    }
+}
+```
+
+## Patterns that bind to values
+
+
+
 
 
