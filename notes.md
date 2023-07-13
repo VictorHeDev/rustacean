@@ -309,8 +309,57 @@ Associated functions that don't have `self' as their first parameter don't need 
 ### Multiple `impl` blocks
 Each struct is allowed to have mutiple `impl` blocks as a way to organize code. 
 
+# Chapter 6 - Enums and Pattern Matching
+Enums allow you to define a type by enumerating its possible variants. Enums can encode meaning with data. An enum called `Option` is particularly useful for expressing that a value can be either something or nothing. Pattern matching can be done with the keyword `match` which can determine what code is run based on different values of an enum. 
 
+## What is an Enum?
+Enums give you a way of saying a value is one of a possible set/collection of values. You can also define methods on enums by using `call`
 
+```rust
+enum IpAddrKind {
+    V4,
+    V6
+}
+
+enum IpAddr {
+    V4(String),
+    V6(String),
+}
+
+fn main() {
+    let four = IpAddrKind::V4;
+    let six = IpAddrKind::V6;
+
+    route(IpAddrKind::V4);  // call method on enum type
+
+    let home = IpAddr::V4(String::from("127.0.0.1"));
+    let loopback = IpAddr::V6(String::from("::1"));
+}
+
+fn route(ip_kind: IpAddrKind) {
+    // --- something here ---
+}
+```
+
+## The Option Enum
+The problem with null values is that if you try to use a null value as a not-null value, then the program will crash (in many other languages). As such, Rust does not have nulls, but it does have an enum that can encode the concept of a value being present or not. 
+```rust
+enum Option<T> {
+    None,
+    Some(T),
+}
+
+fn main() {
+    let some_numer = Some(5);   // type is i32
+    let some_char = Some('e');  // type is char
+    let absent_number: Option<i32> = None;  // null
+
+    let x: i8 = 5;
+    let y: Option<i8> = Some(5);
+    let sum = x + y;    // will throw an error because y is None 
+}
+```
+The `<T>` syntax is a generic type parameter. Whenever we have an `Option<T>`, we have to convert to a `T` before you can perform `T` operations on it. In general, in order to use an `Option<T>` value, you want to have code that will handle each variant. This can be handled by the `match` expression which is a control flow construct that does this with enums. 
 
 
 
