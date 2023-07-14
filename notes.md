@@ -422,5 +422,18 @@ A package can contain multiple binary crates and optionally one library crate. E
 Crates can contain modules, which are defined in other files that get compiled with the crate. A crate can come in 2 forms: binary or library. Binary crates are programs that you can compile to an executable taht you can run, such as a CLI program or a server. A library crate doesn't have a `main` function and they don't compile to an executable. Library crates define functionality intended by be shared iwth multiple projects. 
 A package is a bundle of one or more crates that provides a set of functionality. A package contains a `Cargo.toml` file that describes how to build those crates. A package can contain as many binary crates as you like, but at most only one library crate. A package must contain at least one crate (whether it's library or binary').
 
+## Defining Modules to Control Scope and Privacy
+`paths` allow you to name items, `use` keyword brings a path into scope, and the `pub` keyword makes items public. 
+
+### Modules cheat sheet
+* When compiling a crate, the compiler 1st looks in the crate root (usually src/lib.rs for library crate or src/main.rs for binary crate)
+* Declare modules in the crate root file
+* Declaring submodules can be done in any file other than the crate root. 
+* Paths to code in modules - once a module is part of your crate, you can refer to code in that module from anywhere else in the same crate. 
+* Private vs. public - declare it with `pub` 
+* The `use` keyword - shorten path 
+
+### Grouping Related Code in Modules
+Modules let us organize code within a crate for readability and easy reuse. Modules also allow us to control the privacy of items, because code within a module is private by default. We can choose to make modules and the items within them public though, which exposes them to allow external code to use and depend on them. 
 
 
