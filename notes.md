@@ -405,6 +405,15 @@ match dice_roll {
 fn add_fancy_hat() {};
 fn remove_fancy_hat() {};
 ```
+## Concise Control Flow with `if let` 
+The `if let` syntax allows you to handle values that match one pattern while ignoring the rest. `if let` means less typing, less indentation, less boilerplate, but you lose the exhaustive checking that `match` enforces. `if let`  is syntactic sugar for a `match` that runs code when the value matches one pattern and then ignores all other values. 
+
+```rust
+let config_max = Some(3u8);
+if let Some(max) = config_max { // the code in the if let block isn't run if the value doesn't match the pattern
+    println!("The maximum is configured to be {}", max);
+}
+```
 
 
 
