@@ -418,5 +418,9 @@ if let Some(max) = config_max { // the code in the if let block isn't run if the
 # Chapter 7 - Managing Growing Projects with Packages, Crates, and Modules
 A package can contain multiple binary crates and optionally one library crate. Encapsulating implementation details also allows you to call your code via its public interface without having to know how the implementation works. You can't have 2 of the same name in the same scope, so tools are available to resolve name conflicts. The module system includes: packages, crates, modules, and paths. 
 
+## Packages and Crates
+Crates can contain modules, which are defined in other files that get compiled with the crate. A crate can come in 2 forms: binary or library. Binary crates are programs that you can compile to an executable taht you can run, such as a CLI program or a server. A library crate doesn't have a `main` function and they don't compile to an executable. Library crates define functionality intended by be shared iwth multiple projects. 
+A package is a bundle of one or more crates that provides a set of functionality. A package contains a `Cargo.toml` file that describes how to build those crates. A package can contain as many binary crates as you like, but at most only one library crate. A package must contain at least one crate (whether it's library or binary').
+
 
 
