@@ -415,5 +415,8 @@ if let Some(max) = config_max { // the code in the if let block isn't run if the
 }
 ```
 
+# Chapter 7 - Managing Growing Projects with Packages, Crates, and Modules
+A package can contain multiple binary crates and optionally one library crate. Encapsulating implementation details also allows you to call your code via its public interface without having to know how the implementation works. You can't have 2 of the same name in the same scope, so tools are available to resolve name conflicts. The module system includes: packages, crates, modules, and paths. 
+
 
 
