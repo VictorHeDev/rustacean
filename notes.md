@@ -436,4 +436,61 @@ A package is a bundle of one or more crates that provides a set of functionality
 ### Grouping Related Code in Modules
 Modules let us organize code within a crate for readability and easy reuse. Modules also allow us to control the privacy of items, because code within a module is private by default. We can choose to make modules and the items within them public though, which exposes them to allow external code to use and depend on them. 
 
+## Paths for Referring to an Item in the Module Tree
+A path can take 2 forms:
+* Absolute path - starts with the literal `crate` and is the full path
+* Relative path - starts from the current module and uses `self`, `super`, or a different identifier
+
+Items in a parent module cannot use the private items inisde child modules, but items in child modules can use the items in their ancestor modules. 
+
+### Exposing Paths with the `pub` keyword
+
+### Best practices for packages with a Binary and Library
+The module tree should be defined in the `src/lib.rs` and any public items can be used in the binary crate by starting paths with the name of the package. 
+
+### Starting Relative paths with `super`
+We can construct relative paths that begin in the parent module, rather than the current module or the crate root, by using `super` at the start of the path. 
+
+### Making Structs and Enums public
+We can also use `pub` to designate structs and enums as public. If we use `pub` before a struct defintion, we make the struct public, but the struct's fields will still be private. We can make each field public or not on a case by case basis. If we make an enum public, all of its variants are then public.
+
+## Bringing Paths into scope with the `use` keyword
+We can create a shortcut to a path with the `use` keyword once, and then use the shorter name everywhere else in the scope like an alias.
+
+### Creating Idiomatic `use` Paths
+When bringing in structs, enums, and other items with `use`, it's idiomatic to specify the full path.
+
+```rust
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}
+```
+
+### Using nested paths to clean up large `use` lists
+```rust
+// instead of doing this
+use std::cmp::Ordering;
+use std::io;
+
+// do this
+use std::{cmp::Ordering, io};
+
+// instead of doing this
+use std::io;
+use std::io::Write;
+
+// do this
+use std::io{self, Write};
+```
+
+### The Glob Operator
+If we want to bring all public items defined in a path into scope, we can specify that path followed by the `*` glob operator.
+```rust
+use std::collections::*;
+```
+
+
 
