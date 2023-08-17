@@ -415,5 +415,86 @@ if let Some(max) = config_max { // the code in the if let block isn't run if the
 }
 ```
 
+# Chapter 7 - Managing Growing Projects with Packages, Crates, and Modules
+A package can contain multiple binary crates and optionally one library crate. Encapsulating implementation details also allows you to call your code via its public interface without having to know how the implementation works. You can't have 2 of the same name in the same scope, so tools are available to resolve name conflicts. The module system includes: packages, crates, modules, and paths. 
+
+## Packages and Crates
+Crates can contain modules, which are defined in other files that get compiled with the crate. A crate can come in 2 forms: binary or library. Binary crates are programs that you can compile to an executable taht you can run, such as a CLI program or a server. A library crate doesn't have a `main` function and they don't compile to an executable. Library crates define functionality intended by be shared iwth multiple projects. 
+A package is a bundle of one or more crates that provides a set of functionality. A package contains a `Cargo.toml` file that describes how to build those crates. A package can contain as many binary crates as you like, but at most only one library crate. A package must contain at least one crate (whether it's library or binary').
+
+## Defining Modules to Control Scope and Privacy
+`paths` allow you to name items, `use` keyword brings a path into scope, and the `pub` keyword makes items public. 
+
+### Modules cheat sheet
+* When compiling a crate, the compiler 1st looks in the crate root (usually src/lib.rs for library crate or src/main.rs for binary crate)
+* Declare modules in the crate root file
+* Declaring submodules can be done in any file other than the crate root. 
+* Paths to code in modules - once a module is part of your crate, you can refer to code in that module from anywhere else in the same crate. 
+* Private vs. public - declare it with `pub` 
+* The `use` keyword - shorten path 
+
+### Grouping Related Code in Modules
+Modules let us organize code within a crate for readability and easy reuse. Modules also allow us to control the privacy of items, because code within a module is private by default. We can choose to make modules and the items within them public though, which exposes them to allow external code to use and depend on them. 
+
+## Paths for Referring to an Item in the Module Tree
+A path can take 2 forms:
+* Absolute path - starts with the literal `crate` and is the full path
+* Relative path - starts from the current module and uses `self`, `super`, or a different identifier
+
+Items in a parent module cannot use the private items inisde child modules, but items in child modules can use the items in their ancestor modules. 
+
+### Exposing Paths with the `pub` keyword
+
+### Best practices for packages with a Binary and Library
+The module tree should be defined in the `src/lib.rs` and any public items can be used in the binary crate by starting paths with the name of the package. 
+
+### Starting Relative paths with `super`
+We can construct relative paths that begin in the parent module, rather than the current module or the crate root, by using `super` at the start of the path. 
+
+### Making Structs and Enums public
+We can also use `pub` to designate structs and enums as public. If we use `pub` before a struct defintion, we make the struct public, but the struct's fields will still be private. We can make each field public or not on a case by case basis. If we make an enum public, all of its variants are then public.
+
+## Bringing Paths into scope with the `use` keyword
+We can create a shortcut to a path with the `use` keyword once, and then use the shorter name everywhere else in the scope like an alias.
+
+### Creating Idiomatic `use` Paths
+When bringing in structs, enums, and other items with `use`, it's idiomatic to specify the full path.
+
+```rust
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}
+```
+
+### Using nested paths to clean up large `use` lists
+```rust
+// instead of doing this
+use std::cmp::Ordering;
+use std::io;
+
+// do this
+use std::{cmp::Ordering, io};
+
+// instead of doing this
+use std::io;
+use std::io::Write;
+
+// do this
+use std::io{self, Write};
+```
+
+### The Glob Operator
+If we want to bring all public items defined in a path into scope, we can specify that path followed by the * glob operator.
+```rust
+use std::collections::*;
+```
+## Separating Modules into Different Files
+When modules get large, you might want to move their definitions to a separate file to make the code easier to navigate.
+
+
+
 
 
