@@ -15,6 +15,12 @@ mod tests {
 
 fn deliver_order() {}
 
+mod front_of_house;
+pub use crate::front_of_house::hosting;
+pub fn eat_at_restaurant() {
+    hosting::add_to_waitlist();
+}
+
 mod back_of_house {
     pub struct Breakfast {
         pub toast: String,
@@ -43,11 +49,6 @@ mod back_of_house {
 }
 
 mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-        // fn seat_at_table() {}
-    }
-
     mod serving {
         fn take_order() {}
         fn serve_order() {}

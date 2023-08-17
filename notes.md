@@ -487,10 +487,14 @@ use std::io{self, Write};
 ```
 
 ### The Glob Operator
-If we want to bring all public items defined in a path into scope, we can specify that path followed by the `*` glob operator.
+If we want to bring all public items defined in a path into scope, we can specify that path followed by the * glob operator.
 ```rust
 use std::collections::*;
 ```
+## Separating Modules into Different Files
+When modules get large, you might want to move their definitions to a separate file to make the code easier to navigate.
+
+
 
 
 
