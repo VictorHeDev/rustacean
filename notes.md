@@ -494,7 +494,74 @@ use std::collections::*;
 ## Separating Modules into Different Files
 When modules get large, you might want to move their definitions to a separate file to make the code easier to navigate.
 
+# Chapter 8 - Common Collections
+3 will be discussed: `vector`, `string`, and `hash map`
 
+## Storing Lists of Values with Vectors
+Vector, or `Vec<T>`, allows you to store more than one value in a single data structure that puts all the values next to each other in memory. Vectors can only store values of the same type. Vectors are implemented using generics.
 
+## Creating a new Vector
+```rust
+let v: Vec<i32> = Vec::new();
+
+let v = vec![1, 2, 3]; // Rust compiler will infer to be i32
+```
+
+## Updating a Vector
+```rust
+let mut v = Vec::new();
+v.push(5);
+v.push(6);
+v.push(7);
+v.push(8);
+```
+
+## Reading Elements of Vectors
+2 ways to reference a value stored in a vector: indexing or using the `get` method. Indexing out of range will throw an error, whereas using `get` with an index out of range will return `None`. 
+
+```rust
+let v = vec![1, 2, 3, 4, 5];
+let third: &i32 = &v[2];
+println!("The third element is {third}");
+
+let third: Option<&i32> = v.get(2); # 3
+match third {
+    Some(third) => println!("The third element is {third}"),
+    None => println!("There is no third element."),
+}
+```
+
+## Iterating over the Values in a Vector
+```rust
+let v = vec![100, 32, 57];
+for i in &v {
+    println!("{i}");
+}
+```
+If we want to mutate the elements then look at the code below. We have to use the * to dereference the value in `i` before we can use the `+=` operator. 
+
+```rust
+let mut v = vec![100, 32, 57];
+for i in &mut v {
+    *i += 50;
+}
+```
+
+## Using an Enum to Store Multiple Types
+Vectors can only store values that are the same type. If we need one type of Enum ot represent elements of different types, we can define and use an enum.
+
+```rust
+enum SpreadsheetCell {
+    Int(i32),
+    Float(f64),
+    Text(String),
+}
+
+let row = vec![
+    SpreadsheetCell::Int(3),
+    SpreadsheetCell::Text(String::from("blue")),
+    SpreadsheetCell::Float(10.12)
+]
+```
 
 
