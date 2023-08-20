@@ -687,6 +687,21 @@ println!("{:?}", map);
 ### Summary
 Vectors, strings, and hash maps will provide a large amount of functionality necessary in programs when you need to store, access, and modify data.
 
+# Chapter 9 - Error Handling
+There are 2 major categories of errors in Rust: recoverable and unrecoverable. Rust doesn't have exceptions. It has a type `Result<T,E>` for recoverable errors and the `panic!` macro that stops execution when the program encounters an unrecoverable error. 
+
+## Unrecoverable Errors with `panic!`
+```rust
+fn main() {
+    panic!("crash and burn");
+}
+```
+
+## Using a `panic!` backtrace
+A backtrace is a list of all the functions that have been called to get to the error point. 
+```shell
+$ RUST_BACKTRACE=1 cargo run
+```
 
 
 
