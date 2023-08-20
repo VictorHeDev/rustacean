@@ -703,7 +703,64 @@ A backtrace is a list of all the functions that have been called to get to the e
 $ RUST_BACKTRACE=1 cargo run
 ```
 
+## Recoverable Errors with `Result`
+Recall that the `Result` enum is defined as having 2 variants: `Ok` and `Err`, which are generic type parameters. 
 
+```rust
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+
+use std::fs::File
+use std::io::ErrorKind;
+
+fn main() {
+    let greeting_file_result = File::open("hello.txt");
+
+    let greeting_file - match greeting_file_result {
+        Ok(file) => file,
+        Err(error) => match error.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem opening the file: {:?}", e),
+            },
+            other_error => {
+                panic!("Problem opening the file: {:?}", other_error);
+            }
+        }
+    };
+}
+```
+
+## Shortcuts for Panic on Error: `unwrap` and `expect`
+Using `match` all the time can get quite verbose. The `unwrap` method is a shortcut method implemented just like the `match` expression we wrote above. The `Result` value is the `Ok` variant, `unwrap` will return the value inside the `Ok`. The `expect` method lets us choose the `panic!` error message. In production code, it is more common to see `expect` rather than `unwrap` to see more context about why the operation is expected to always succeed. 
+
+```rust
+use std::fs::File;
+
+fn main() {
+    // let greeting_file = File::open("hello.txt").unwrap();
+    let greeting_file = File::open("hello.txt")
+        .expect("hello.txt should be included in the project");
+}
+```
+
+## Propagating Errors
+When a function's implementation calls something that might fail, instead of handling the error within the function itself, you can return the error to the calling code so that it can decide what to do. This is called propagating the error and gives more control to the calling code. 
+
+## A Shortcut for Propagating Errors: The ? operator
+```rust
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let mut username_file = File::open("hello.txt")?;
+    let mut username = String::new();
+    username_file.read_to_string(&mut username)?;
+    Ok(username)
+}
+```
 
 
 
