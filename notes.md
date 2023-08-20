@@ -621,4 +621,77 @@ for c in "Зд".chars() {
 ```
 
 ## Storing Keys with Associated Values in Hash Maps
+The type `HashMap<K, V>` stores a mapping of keys of type `K` to values. Just like vectors, hash maps are homogenous: all of the keys must have the same type as each other, and all of the values must have the same type.  of type `V` using a hashing function, which determines how it places these keys and values into memory. Just like vectors, hash maps are homogenous: all of the keys must have the same type as each other, and all of the values must have the same type. 
+
+## Creating a new Hash Map
+```rust
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
+
+let team_name = String::from("Blue");
+let score = scores.get(&team_name).copied().unwrap_or(0);
+```
+We can iterate over each key/value pair in a hash map in a similar manner as we do with vectors, using a `for` loop.
+```rust
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+socres.insert(String::from("Blue"), 10);
+scores.insert(String::from("Yellow"), 50);
+
+for (key, value) in &scores {
+    println!("{key}: {value}");
+}
+```
+
+## Updating a Hash Map
+### Overwriting a Value
+If we insert a key and a value into a hash map and then insert the same key with a different value, the value associated with that key will be replaced. 
+
+```rust
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+
+scores.insert(String::from("Blue"), 10);
+scores.insert(String::from("Blue"), 25);
+println!("{:?}", scores); // {"Blue": 25}
+```
+
+### Adding a Key and Value only if a Key isn't Present
+Hash maps have a special API called `entry` that takes the key you want to check as a parameter. The return value of the `entry` method is an enum caleld `Entry` that represents a value that might or might not exist.
+
+```rust
+use std::collections::HashMap;
+let mut scores = HashMap::new();
+scores.insert(String::from("Blue"), 10);
+scores.entry(String::from("Yellow")).or_insert(50);
+scores.entry(String::from("Blue")).or_insert(50);
+
+println!("{:?}", scores); // {"Yellow": 50, "Blue": 10} bc "Blue" already has a value
+```
+
+### Updating a Value Based on the Old Value
+```rust
+use std::collections::HashMap;
+let text = "hello world wonderful world";
+let mut map = HashMap::new();
+
+for word in text.split_whitespace() {
+    let count = map.entry(word).or_insert(0);
+    *count += 1; // dereference count variable
+}
+println!("{:?}", map);
+```
+
+### Summary
+Vectors, strings, and hash maps will provide a large amount of functionality necessary in programs when you need to store, access, and modify data.
+
+
+
+
+
+
+
+
 
